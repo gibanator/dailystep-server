@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 @Configuration
 @Profile("!test")
@@ -17,17 +16,8 @@ public class FirebaseConfig {
     @PostConstruct
     public void init() throws IOException {
 
-        InputStream serviceAccount =
-                getClass()
-                        .getClassLoader()
-                        .getResourceAsStream("firebase-service-account.json");
-
-        if (serviceAccount == null) {
-            throw new IllegalStateException("Firebase service account not found");
-        }
-
         FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                .setCredentials(GoogleCredentials.getApplicationDefault())
                 .build();
 
         if (FirebaseApp.getApps().isEmpty()) {

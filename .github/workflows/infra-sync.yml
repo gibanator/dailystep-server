@@ -2,7 +2,7 @@ name: Deploy infrastructure
 
 on:
   workflow_dispatch:
-  
+
   push:
     branches:
       - main
@@ -33,6 +33,7 @@ jobs:
         run: |
           rsync -az --delete \
             --exclude='.env' \
+            --exclude='secrets/' \
             infra/ \
             ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/opt/dailystep/
 

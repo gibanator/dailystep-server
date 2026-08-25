@@ -29,7 +29,11 @@ services:
       DB_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB}
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
+      GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-service-account.json
 
+    volumes:
+      - ./secrets/firebase-service-account.json:/run/secrets/firebase.json:ro
+      
     expose:
       - "8080"
 
