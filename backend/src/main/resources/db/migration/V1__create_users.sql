@@ -1,0 +1,5 @@
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY,
+    email VARCHAR(254) NOT NULL UNIQUE,
+    created_at TIMESTAMP NOT NUll
+);

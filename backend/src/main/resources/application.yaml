@@ -1,0 +1,69 @@
+spring:
+  application:
+    name: dailystep-backend-java
+
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+
+  flyway:
+    enabled: true
+    callback-locations: classpath:db/migration
+
+  devtools:
+    livereload:
+      enabled: false
+
+  web:
+    error:
+      include-message: always
+      include-stacktrace: never
+      include-path: never
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_SENDER_ADDRESS}
+    password: ${EMAIL_SENDER_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+  ai:
+    gigachat:
+      auth:
+        bearer:
+          api-key: ${GIGACHAT_API_KEY:}
+        scope: ${GIGACHAT_SCOPE:GIGACHAT_API_PERS}
+        # dev: пропускаем проверку TLS-сертификата. В проде заменить на сертификаты Минцифры.
+        unsafe-ssl: ${GIGACHAT_UNSAFE_SSL:true}
+      chat:
+        options:
+          model: ${GIGACHAT_MODEL:GigaChat}
+          temperature: 0.3
+          max-tokens: 1024
+    openai:
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+      api-key: ${DEEPSEEK_API_KEY:YOUR_DEEPSEEK_API_KEY}
+      chat:
+        completions-path: /chat/completions
+        options:
+          model: ${DEEPSEEK_MODEL:deepseek-v4-flash}
+          temperature: 0.3
+          max-tokens: 1024
+
+asr:
+  url: http://localhost:8001
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000
