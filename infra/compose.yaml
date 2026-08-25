@@ -32,8 +32,8 @@ services:
       GOOGLE_APPLICATION_CREDENTIALS: /run/secrets/firebase-service-account.json
 
     volumes:
-      - ./secrets/firebase-service-account.json:/run/secrets/firebase.json:ro
-      
+      - ./secrets/firebase-service-account.json:/run/secrets/firebase-service-account.json:ro
+
     expose:
       - "8080"
 
