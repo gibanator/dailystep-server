@@ -4,6 +4,7 @@ import com.gibanator.dailystepbackendjava.ai.AiProvider;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Вход от приложения: текст дня + список категорий и целей пользователя + выбранный провайдер.
@@ -23,5 +24,5 @@ public record AiEvaluateRequest(
         List<Named> categories, // категории пользователя
         List<Named> targets     // цели пользователя (могут быть пустыми)
 ) {
-    public record Named(Long id, String name) {}
+    public record Named(UUID id, String name) {}
 }

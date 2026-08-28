@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -73,10 +74,12 @@ class TargetControllerIntegrationTests {
 
     @Test
     void mapsMissingOrForeignTargetToNotFound() throws Exception {
-        mockMvc.perform(get("/api/v1/targets/999999/selections")
+        UUID missingTargetId = UUID.fromString("00000000-0000-0000-0000-000000999999");
+
+        mockMvc.perform(get("/api/v1/targets/{id}/selections", missingTargetId)
                         .with(authentication(authentication)))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Not found."))
-                .andExpect(jsonPath("$.msg").value("Target with id 999999 not found."));
+                .andExpect(jsonPath("$.msg").value("Target with id " + missingTargetId + " not found."));
     }
 }

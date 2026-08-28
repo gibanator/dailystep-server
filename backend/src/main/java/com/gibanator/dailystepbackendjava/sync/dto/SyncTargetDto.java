@@ -1,15 +1,18 @@
 package com.gibanator.dailystepbackendjava.sync.dto;
 
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record SyncTargetDto(
-        Long id,
+        UUID id,
         String name,
         int days,
         int daysSelected,
         boolean completed,
         LocalDate deadline,
-        LocalDateTime createdAt
+        boolean deleted,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }

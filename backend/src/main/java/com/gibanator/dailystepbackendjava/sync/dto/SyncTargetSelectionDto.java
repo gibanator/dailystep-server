@@ -1,10 +1,13 @@
 package com.gibanator.dailystepbackendjava.sync.dto;
 
 import java.time.LocalDate;
+import java.time.Instant;
+import java.util.UUID;
 
 public record SyncTargetSelectionDto(
-        Long targetId,
+        UUID targetId,
         LocalDate date,
-        boolean selected
+        boolean deleted,
+        Instant updatedAt
 ) {
 }

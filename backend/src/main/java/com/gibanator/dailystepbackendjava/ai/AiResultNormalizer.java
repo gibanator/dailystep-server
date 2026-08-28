@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,8 +25,8 @@ public class AiResultNormalizer {
     private static final int MAX_COMMENT_LENGTH = 100;
 
     public AiEvalResult normalize(AiEvaluateRequest req, AiEvalResult raw) {
-        Map<Long, AiEvalResult.CategoryResult> byCategory = indexCategories(raw);
-        Map<Long, AiEvalResult.TargetResult> byTarget = indexTargets(raw);
+        Map<UUID, AiEvalResult.CategoryResult> byCategory = indexCategories(raw);
+        Map<UUID, AiEvalResult.TargetResult> byTarget = indexTargets(raw);
 
         List<AiEvalResult.CategoryResult> categories = namedOrEmpty(req.categories()).stream()
                 .map(named -> {
@@ -48,7 +49,7 @@ public class AiResultNormalizer {
         return new AiEvalResult(daySummary, categories, targets);
     }
 
-    private Map<Long, AiEvalResult.CategoryResult> indexCategories(AiEvalResult raw) {
+    private Map<UUID, AiEvalResult.CategoryResult> indexCategories(AiEvalResult raw) {
         if (raw == null || raw.categories() == null) {
             return Map.of();
         }
@@ -60,7 +61,7 @@ public class AiResultNormalizer {
                         (a, b) -> a));
     }
 
-    private Map<Long, AiEvalResult.TargetResult> indexTargets(AiEvalResult raw) {
+    private Map<UUID, AiEvalResult.TargetResult> indexTargets(AiEvalResult raw) {
         if (raw == null || raw.targets() == null) {
             return Map.of();
         }

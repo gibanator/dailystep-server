@@ -1,9 +1,8 @@
-package com.gibanator.dailystepbackendjava.sync.dto;
+package com.gibanator.dailystepbackendjava.sync.push.dto;
 
-import java.time.Instant;
 import java.util.UUID;
 
-public record SyncCategoryDto(
+public record SyncCategoryMutationDto(
         UUID id,
         String name,
         String nameKey,
@@ -11,8 +10,6 @@ public record SyncCategoryDto(
         boolean active,
         boolean system,
         boolean visible,
-        boolean deleted,
-        Instant createdAt,
-        Instant updatedAt
+        boolean deleted
 ) {
 }

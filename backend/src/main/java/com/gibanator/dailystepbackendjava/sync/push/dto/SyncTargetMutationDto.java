@@ -1,16 +1,15 @@
-package com.gibanator.dailystepbackendjava.target.dto;
+package com.gibanator.dailystepbackendjava.sync.push.dto;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.util.UUID;
 
-public record TargetResponse(
+public record SyncTargetMutationDto(
         UUID id,
         String name,
         int days,
         int daysSelected,
         boolean completed,
         LocalDate deadline,
-        Instant createdAt
+        boolean deleted
 ) {
 }

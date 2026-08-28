@@ -10,6 +10,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/category")
@@ -54,7 +55,7 @@ public class CategoryController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<GetCategoryResponse> editMyCategoryById(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user,
             @RequestBody EditCategoryRequest req
     ){
@@ -75,7 +76,7 @@ public class CategoryController {
 
     @PatchMapping("/{id}/visibility/switch")
     public ResponseEntity<CategoryVisibilityResponse> switchVisibility(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user
     ) {
         CategoryEntity cat = service.switchVisibility(id, user.getId());
@@ -87,7 +88,7 @@ public class CategoryController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> removeCategory(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user
     ){
         service.delete(id, user.getId());

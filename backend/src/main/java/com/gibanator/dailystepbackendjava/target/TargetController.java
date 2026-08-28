@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/targets")
@@ -51,7 +52,7 @@ public class TargetController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TargetResponse> update(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user,
             @Valid @RequestBody UpdateTargetRequest request
     ) {
@@ -60,7 +61,7 @@ public class TargetController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user
     ) {
         service.delete(user.getId(), id);
@@ -69,7 +70,7 @@ public class TargetController {
 
     @PutMapping("/{id}/selections/{date}")
     public ResponseEntity<TargetSelectionResponse> select(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @PathVariable LocalDate date,
             @AuthenticationPrincipal UserPrincipal user
     ) {
@@ -78,7 +79,7 @@ public class TargetController {
 
     @DeleteMapping("/{id}/selections/{date}")
     public ResponseEntity<TargetSelectionResponse> deselect(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @PathVariable LocalDate date,
             @AuthenticationPrincipal UserPrincipal user
     ) {
@@ -87,7 +88,7 @@ public class TargetController {
 
     @GetMapping("/{id}/selections")
     public ResponseEntity<TargetSelectionHistoryResponse> getSelectionHistory(
-            @PathVariable Long id,
+            @PathVariable UUID id,
             @AuthenticationPrincipal UserPrincipal user
     ) {
         return ResponseEntity.ok(service.getSelectionHistory(user.getId(), id));

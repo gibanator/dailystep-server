@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -17,7 +18,6 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
 
-    // UNSAFE !!! NEED TO SWITCH TO AUTH WAY (EITHER PASS UserEntity OR GET FROM AuthService) !!!!!!
     public CategoryEntity create(Long userId, String name) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
@@ -38,7 +38,7 @@ public class CategoryService {
        return categoryRepository.findByUserIdAndDeletedFalse(userId);
     }
 
-    public CategoryEntity update(Long id, Long userId, String name, Boolean isActive, Boolean isVisible) {
+    public CategoryEntity update(UUID id, Long userId, String name, Boolean isActive, Boolean isVisible) {
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
@@ -59,7 +59,7 @@ public class CategoryService {
         return categoryRepository.save(cat);
     }
 
-    public CategoryEntity switchVisibility(Long id, Long userId) {
+    public CategoryEntity switchVisibility(UUID id, Long userId) {
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 
@@ -72,7 +72,7 @@ public class CategoryService {
         return categoryRepository.save(cat);
     }
 
-    public void delete(Long id, Long userId){
+    public void delete(UUID id, Long userId){
         CategoryEntity cat = categoryRepository.findById(id)
                 .orElseThrow(() -> new CategoryNotFoundException(id));
 

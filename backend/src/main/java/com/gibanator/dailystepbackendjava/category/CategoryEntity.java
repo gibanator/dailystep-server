@@ -5,7 +5,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.UUID;
 
 @NoArgsConstructor
 @Entity
@@ -14,8 +15,8 @@ import java.time.LocalDateTime;
 @Setter
 public class CategoryEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false, updatable = false)
+    private UUID id;
 
     @Column(nullable = false)
     private String name;
@@ -38,10 +39,23 @@ public class CategoryEntity {
     private boolean deleted = false;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
 
     @PrePersist
-    public void prePersist(){
-        createdAt = LocalDateTime.now();
+    public void prePersist() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+        Instant now = Instant.now();
+        createdAt = now;
+        updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        updatedAt = Instant.now();
     }
 }

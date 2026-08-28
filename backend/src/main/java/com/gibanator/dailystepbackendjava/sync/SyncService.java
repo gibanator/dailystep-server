@@ -6,13 +6,7 @@ import com.gibanator.dailystepbackendjava.dailycategoryprogress.DailyCategoryPro
 import com.gibanator.dailystepbackendjava.dailycategoryprogress.DailyCategoryProgressRepository;
 import com.gibanator.dailystepbackendjava.daycompletion.DayCompletionEntity;
 import com.gibanator.dailystepbackendjava.daycompletion.DayCompletionRepository;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncCategoryDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncCommentTemplateDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncDailyProgressDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncDayCompletionDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncSnapshotDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncTargetDto;
-import com.gibanator.dailystepbackendjava.sync.dto.SyncTargetSelectionDto;
+import com.gibanator.dailystepbackendjava.sync.dto.*;
 import com.gibanator.dailystepbackendjava.target.TargetEntity;
 import com.gibanator.dailystepbackendjava.target.TargetRepository;
 import com.gibanator.dailystepbackendjava.targetselection.TargetSelectionEntity;
@@ -21,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -34,24 +29,39 @@ public class SyncService {
     private final TargetSelectionRepository targetSelectionRepository;
 
     @Transactional(readOnly = true)
-    public SyncSnapshotDto snapshot(Long userId) {
-        return new SyncSnapshotDto(
-                categoryRepository.findAllByUserIdOrderByIdAsc(userId).stream()
-                        .map(this::toCategoryDto)
-                        .toList(),
-                dailyProgressRepository.findAllByUser(userId).stream()
-                        .map(this::toDailyProgressDto)
-                        .toList(),
-                dayCompletionRepository.findAllByIdUserIdOrderByIdDateAsc(userId).stream()
-                        .map(this::toDayCompletionDto)
-                        .toList(),
-                List.<SyncCommentTemplateDto>of(),
-                targetRepository.findAllByUserIdOrderByIdAsc(userId).stream()
-                        .map(this::toTargetDto)
-                        .toList(),
-                targetSelectionRepository.findAllByUserId(userId).stream()
-                        .map(this::toTargetSelectionDto)
-                        .toList()
+    public SyncResponseDto pull(Long userId, Instant since) {
+        boolean fullSync = since == null;
+
+        Instant serverTime = Instant.now();
+
+        List<CategoryEntity> categories = fullSync
+                ? categoryRepository.findAllByUserIdOrderBySortOrderAscCreatedAtAsc(userId)
+                : categoryRepository.findChangedSince(userId, since);
+
+        List<DailyCategoryProgressEntity> progress = fullSync
+                ? dailyProgressRepository.findAllByUserId(userId)
+                : dailyProgressRepository.findChangedSince(userId, since);
+
+        List<DayCompletionEntity> dayCompletions = fullSync
+                ? dayCompletionRepository.findAllByIdUserIdOrderByIdDateAsc(userId)
+                : dayCompletionRepository.findChangedSince(userId, since);
+
+        List<TargetEntity> targets = fullSync
+                ? targetRepository.findAllByUserIdOrderByCreatedAtAsc(userId)
+                : targetRepository.findChangedSince(userId, since);
+
+        List<TargetSelectionEntity> targetSelections = fullSync
+                ? targetSelectionRepository.findAllByUserId(userId)
+                : targetSelectionRepository.findChangedSince(userId, since);
+
+        return new SyncResponseDto(
+                categories.stream().map(this::toCategoryDto).toList(),
+                progress.stream().map(this::toDailyProgressDto).toList(),
+                dayCompletions.stream().map(this::toDayCompletionDto).toList(),
+                List.of(),
+                targets.stream().map(this::toTargetDto).toList(),
+                targetSelections.stream().map(this::toTargetSelectionDto).toList(),
+                serverTime
         );
     }
 
@@ -65,7 +75,8 @@ public class SyncService {
                 category.isSystem(),
                 category.isVisible(),
                 category.isDeleted(),
-                category.getCreatedAt()
+                category.getCreatedAt(),
+                category.getUpdatedAt()
         );
     }
 
@@ -74,14 +85,16 @@ public class SyncService {
                 progress.getId().getDate(),
                 progress.getId().getCategoryId(),
                 progress.isCompleted(),
-                progress.getComment()
+                progress.getComment(),
+                progress.getUpdatedAt()
         );
     }
 
     private SyncDayCompletionDto toDayCompletionDto(DayCompletionEntity completion) {
         return new SyncDayCompletionDto(
                 completion.getId().getDate(),
-                true
+                completion.isDeleted(),
+                completion.getUpdatedAt()
         );
     }
 
@@ -93,7 +106,9 @@ public class SyncService {
                 target.getDaysSelected(),
                 target.isCompleted(),
                 target.getDeadline(),
-                target.getCreatedAt()
+                target.isDeleted(),
+                target.getCreatedAt(),
+                target.getUpdatedAt()
         );
     }
 
@@ -101,7 +116,10 @@ public class SyncService {
         return new SyncTargetSelectionDto(
                 selection.getId().getTargetId(),
                 selection.getId().getDate(),
-                true
+                selection.isDeleted(),
+                selection.getUpdatedAt()
         );
     }
+
+
 }

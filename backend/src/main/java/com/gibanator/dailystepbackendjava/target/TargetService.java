@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,12 +31,12 @@ public class TargetService {
 
     @Transactional(readOnly = true)
     public TargetListResponse findAllForDate(Long userId, LocalDate date) {
-        List<TargetResponse> targets = targetRepository.findAllByUserIdOrderByIdAsc(userId)
+        List<TargetResponse> targets = targetRepository.findAllByUserIdOrderByCreatedAtAsc(userId)
                 .stream()
                 .map(this::toResponse)
                 .toList();
 
-        List<Long> selectedTargetIds = selectionRepository.findSelectedTargetIds(userId, date);
+        List<UUID> selectedTargetIds = selectionRepository.findSelectedTargetIds(userId, date);
 
         return new TargetListResponse(date, targets, selectedTargetIds);
     }
@@ -55,7 +56,7 @@ public class TargetService {
     }
 
     @Transactional
-    public TargetResponse update(Long userId, Long targetId, UpdateTargetRequest request) {
+    public TargetResponse update(Long userId, UUID targetId, UpdateTargetRequest request) {
         TargetEntity target = findOwnedForUpdate(userId, targetId);
 
         target.setName(request.name().trim());
@@ -67,13 +68,13 @@ public class TargetService {
     }
 
     @Transactional
-    public void delete(Long userId, Long targetId) {
+    public void delete(Long userId, UUID targetId) {
         TargetEntity target = findOwnedForUpdate(userId, targetId);
         targetRepository.delete(target);
     }
 
     @Transactional
-    public TargetSelectionResponse select(Long userId, Long targetId, LocalDate date) {
+    public TargetSelectionResponse select(Long userId, UUID targetId, LocalDate date) {
         TargetEntity target = findOwnedForUpdate(userId, targetId);
         TargetSelectionId selectionId = new TargetSelectionId(targetId, date);
 
@@ -91,7 +92,7 @@ public class TargetService {
     }
 
     @Transactional
-    public TargetSelectionResponse deselect(Long userId, Long targetId, LocalDate date) {
+    public TargetSelectionResponse deselect(Long userId, UUID targetId, LocalDate date) {
         TargetEntity target = findOwnedForUpdate(userId, targetId);
         TargetSelectionId selectionId = new TargetSelectionId(targetId, date);
 
@@ -105,7 +106,7 @@ public class TargetService {
     }
 
     @Transactional(readOnly = true)
-    public TargetSelectionHistoryResponse getSelectionHistory(Long userId, Long targetId) {
+    public TargetSelectionHistoryResponse getSelectionHistory(Long userId, UUID targetId) {
         if (!targetRepository.existsByIdAndUserId(targetId, userId)) {
             throw new TargetNotFoundException(targetId);
         }
@@ -116,7 +117,7 @@ public class TargetService {
         );
     }
 
-    private TargetEntity findOwnedForUpdate(Long userId, Long targetId) {
+    private TargetEntity findOwnedForUpdate(Long userId, UUID targetId) {
         return targetRepository.findOwnedByIdForUpdate(targetId, userId)
                 .orElseThrow(() -> new TargetNotFoundException(targetId));
     }

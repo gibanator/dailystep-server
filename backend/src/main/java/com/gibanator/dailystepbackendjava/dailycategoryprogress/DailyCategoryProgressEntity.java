@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 
 @NoArgsConstructor
 @Getter
@@ -26,4 +28,13 @@ public class DailyCategoryProgressEntity {
     private boolean completed;
 
     private String comment;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        updatedAt = Instant.now();
+    }
 }

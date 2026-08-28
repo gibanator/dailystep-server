@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @NoArgsConstructor
 @Entity
@@ -24,10 +24,10 @@ public class UserEntity {
     @Column(name = "firebase_uid", nullable = false, unique = true)
     private String firebaseUid;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @PrePersist
     public void prePersist(){
-        createdAt = LocalDateTime.now();
+        createdAt = Instant.now();
     }
 }

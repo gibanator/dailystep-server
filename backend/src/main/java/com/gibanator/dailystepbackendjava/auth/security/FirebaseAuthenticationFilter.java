@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Collections;
 
 @Component
@@ -57,7 +57,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
 
                         newUser.setFirebaseUid(firebaseUid);
                         newUser.setEmail(email);
-                        newUser.setCreatedAt(LocalDateTime.now());
+                        newUser.setCreatedAt(Instant.now());
 
                         return userRepository.save(newUser);
                     });

@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.UUID;
 
 public record SaveDailyProgressRequest(
         @NotNull(message = "Date not specified.")
@@ -11,7 +12,7 @@ public record SaveDailyProgressRequest(
         List<Item> items
 ) {
     public record Item(
-            Long categoryId,
+            UUID categoryId,
             boolean completed,
             String comment
     ) {}

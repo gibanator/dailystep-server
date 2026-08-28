@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -32,7 +33,7 @@ public class DailyCategoryProgressService {
         }
 
         // set of category ids in request
-        Set<Long> categoryIds = req.items().stream()
+        Set<UUID> categoryIds = req.items().stream()
                 .map(SaveDailyProgressRequest.Item::categoryId)
                 .collect(Collectors.toSet());
 
@@ -45,7 +46,7 @@ public class DailyCategoryProgressService {
         }
 
         // category map for found categories type <id, CategoryEntity>
-        Map<Long, CategoryEntity> categoryMap = categories.stream()
+        Map<UUID, CategoryEntity> categoryMap = categories.stream()
                 .collect(Collectors.toMap(CategoryEntity::getId, Function.identity()));
 
         List<DailyCategoryProgressEntity> existingRows =
@@ -55,7 +56,7 @@ public class DailyCategoryProgressService {
                         categoryIds
                 );
 
-        Map<Long, DailyCategoryProgressEntity> existingMap = existingRows.stream()
+        Map<UUID, DailyCategoryProgressEntity> existingMap = existingRows.stream()
                 .collect(Collectors.toMap(
                         e -> e.getId().getCategoryId(),
                         Function.identity()
@@ -113,7 +114,7 @@ public class DailyCategoryProgressService {
                 progressRepository.findAllByUserAndDate(date, userId);
 
         // map progress to categoryId
-        Map<Long, DailyCategoryProgressEntity> progressMap = progressRows.stream()
+        Map<UUID, DailyCategoryProgressEntity> progressMap = progressRows.stream()
                 .collect(Collectors.toMap(
                         i -> i.getId().getCategoryId(),
                         Function.identity()

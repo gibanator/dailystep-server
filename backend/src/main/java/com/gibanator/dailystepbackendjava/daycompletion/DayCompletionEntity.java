@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
+
 @Entity
 @NoArgsConstructor
 @Getter
@@ -20,4 +22,15 @@ public class DayCompletionEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        updatedAt = Instant.now();
+    }
 }

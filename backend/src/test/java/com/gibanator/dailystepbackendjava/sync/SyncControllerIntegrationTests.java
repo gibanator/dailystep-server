@@ -114,19 +114,19 @@ class SyncControllerIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.categories", hasSize(2)))
                 .andExpect(jsonPath("$.categories[*].id",
-                        containsInAnyOrder(activeCategory.getId().intValue(), deletedCategory.getId().intValue())))
-                .andExpect(jsonPath("$.categories[?(@.id == %d)].deleted", deletedCategory.getId()).value(true))
-                .andExpect(jsonPath("$.categories[?(@.id == %d)].deleted", activeCategory.getId()).value(false))
+                        containsInAnyOrder(activeCategory.getId().toString(), deletedCategory.getId().toString())))
+                .andExpect(jsonPath("$.categories[?(@.id == '%s')].deleted", deletedCategory.getId()).value(true))
+                .andExpect(jsonPath("$.categories[?(@.id == '%s')].deleted", activeCategory.getId()).value(false))
                 .andExpect(jsonPath("$.dailyProgress", hasSize(2)))
                 .andExpect(jsonPath("$.dayCompletions", hasSize(1)))
                 .andExpect(jsonPath("$.dayCompletions[0].date").value(date.toString()))
-                .andExpect(jsonPath("$.dayCompletions[0].completed").value(true))
+                .andExpect(jsonPath("$.dayCompletions[0].deleted").value(false))
                 .andExpect(jsonPath("$.commentTemplates", hasSize(0)))
                 .andExpect(jsonPath("$.targets", hasSize(1)))
-                .andExpect(jsonPath("$.targets[0].id").value(target.id()))
+                .andExpect(jsonPath("$.targets[0].id").value(target.id().toString()))
                 .andExpect(jsonPath("$.targetSelections", hasSize(1)))
-                .andExpect(jsonPath("$.targetSelections[0].targetId").value(target.id()))
+                .andExpect(jsonPath("$.targetSelections[0].targetId").value(target.id().toString()))
                 .andExpect(jsonPath("$.targetSelections[0].date").value(date.toString()))
-                .andExpect(jsonPath("$.targetSelections[0].selected").value(true));
+                .andExpect(jsonPath("$.targetSelections[0].deleted").value(false));
     }
 }

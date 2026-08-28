@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Embeddable
 @Getter
@@ -20,7 +21,7 @@ import java.time.LocalDate;
 public class TargetSelectionId implements Serializable {
 
     @Column(name = "target_id")
-    private Long targetId;
+    private UUID targetId;
 
     @Column(name = "date")
     private LocalDate date;

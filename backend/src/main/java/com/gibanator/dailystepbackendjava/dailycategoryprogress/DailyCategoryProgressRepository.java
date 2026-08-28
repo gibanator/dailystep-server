@@ -4,8 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public interface DailyCategoryProgressRepository extends JpaRepository<DailyCategoryProgressEntity, DailyCategoryProgressId> {
     @Query("""
@@ -32,7 +34,7 @@ public interface DailyCategoryProgressRepository extends JpaRepository<DailyCate
     List<DailyCategoryProgressEntity> findAllByUserAndDateAndCategoryIds(
             LocalDate date,
             Long userId,
-            Collection<Long> categoryIds
+            Collection<UUID> categoryIds
     );
 
     @Query("""
@@ -42,5 +44,16 @@ public interface DailyCategoryProgressRepository extends JpaRepository<DailyCate
             where c.user.id = :userId
             order by p.id.date, p.id.categoryId
            """)
-    List<DailyCategoryProgressEntity> findAllByUser(Long userId);
+    List<DailyCategoryProgressEntity> findAllByUserId(Long userId);
+
+    @Query("""
+    SELECT p
+    FROM DailyCategoryProgressEntity p
+    WHERE p.category.user.id = :userId
+      AND p.updatedAt > :since
+    """)
+    List<DailyCategoryProgressEntity> findChangedSince(
+            Long userId,
+            Instant since
+    );
 }

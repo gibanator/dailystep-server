@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Embeddable
 @Getter
@@ -15,6 +16,6 @@ import java.time.LocalDate;
 public class DailyCategoryProgressId implements Serializable {
 
     private LocalDate date;
-    private Long categoryId;
+    private UUID categoryId;
 
 }

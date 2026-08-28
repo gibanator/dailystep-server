@@ -1,15 +1,12 @@
 package com.gibanator.dailystepbackendjava.targetselection;
 
 import com.gibanator.dailystepbackendjava.target.TargetEntity;
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.Instant;
 
 @Entity
 @Table(name = "target_selection")
@@ -25,4 +22,16 @@ public class TargetSelectionEntity {
     @MapsId("targetId")
     @JoinColumn(name = "target_id", nullable = false)
     private TargetEntity target;
+
+    @Column(nullable = false)
+    private boolean deleted = false;
+
+    @Column(nullable = false)
+    private Instant updatedAt;
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        updatedAt = Instant.now();
+    }
 }

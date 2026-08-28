@@ -3,6 +3,7 @@ package com.gibanator.dailystepbackendjava.ai.dto;
 import com.fasterxml.jackson.annotation.JsonPropertyDescription;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Результат модели (Structured Output) и одновременно ответ приложению.
@@ -22,7 +23,7 @@ public record AiEvalResult(
 ) {
     public record CategoryResult(
             @JsonPropertyDescription("id категории из запроса")
-            Long categoryId,
+            UUID categoryId,
             @JsonPropertyDescription("true, если активность по этой категории была сегодня, иначе false")
             boolean completed,
             @JsonPropertyDescription("Короткий комментарий до 100 символов или пустая строка")
@@ -31,7 +32,7 @@ public record AiEvalResult(
 
     public record TargetResult(
             @JsonPropertyDescription("id цели из запроса")
-            Long targetId,
+            UUID targetId,
             @JsonPropertyDescription("true, если пользователь сегодня занимался этой целью, иначе false")
             boolean completed
     ) {}
