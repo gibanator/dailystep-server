@@ -38,8 +38,12 @@ public class SpeechRecognitionService {
 
             log.info("ASR response: {}", response);
 
-            if (response == null || response.text() == null || response.text().isBlank()) {
+            if (response == null) {
                 throw new AsrUnavailableException("Empty ASR response");
+            }
+
+            if (response.text() == null || response.text().isBlank()) {
+                throw new InvalidAudioException("No speech detected");
             }
 
             return new TranscriptionResponse(response.text());
