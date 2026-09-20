@@ -6,6 +6,10 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      
+      ASR_BASE_URL: ${ASR_BASE_URL}
+      ASR_INTERNAL_TOKEN: ${ASR_INTERNAL_TOKEN}
+
     ports:
       - "5432:5432"
     volumes:

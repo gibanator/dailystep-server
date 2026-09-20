@@ -6,8 +6,12 @@ import com.gibanator.dailystepbackendjava.asr.exception.AsrException;
 import com.gibanator.dailystepbackendjava.asr.exception.AsrUnavailableException;
 import com.gibanator.dailystepbackendjava.asr.exception.InvalidAudioException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -35,13 +39,29 @@ public class SpeechRecognitionService {
             throw new AsrUnavailableException("Could not connect to ASR service");
 
         } catch (HttpClientErrorException e) {
-            throw new InvalidAudioException("ASR rejected uploaded audio");
+            if (e.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                throw new AsrUnavailableException("ASR authentication failed");
+            }
+
+            if (e.getStatusCode() == HttpStatus.PAYLOAD_TOO_LARGE) {
+                throw new InvalidAudioException("Uploaded audio is too large");
+            }
+
+            if (e.getStatusCode() == HttpStatus.UNPROCESSABLE_ENTITY) {
+                throw new InvalidAudioException("ASR could not process uploaded audio");
+            }
+
+            throw new AsrException(
+                    "ASR returned client error: " + e.getStatusCode()
+            );
 
         } catch (HttpServerErrorException e) {
             throw new AsrUnavailableException("ASR service failed");
 
         } catch (RestClientResponseException e) {
-            throw new AsrException("ASR service returned unexpected error");
+            throw new AsrException(
+                    "ASR service returned unexpected error: " + e.getStatusCode()
+            );
         }
     }
 }

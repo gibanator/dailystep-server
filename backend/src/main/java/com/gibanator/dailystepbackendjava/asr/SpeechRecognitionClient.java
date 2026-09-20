@@ -19,9 +19,13 @@ public class SpeechRecognitionClient {
 
     private final RestClient restClient;
 
-    public SpeechRecognitionClient(@Value("${asr.url}") String asrUrl) {
+    public SpeechRecognitionClient(
+        @Value("${asr.url}") String asrUrl,
+        @Value("${asr.token}") String asrToken
+    ) {
         this.restClient = RestClient.builder()
                 .baseUrl(asrUrl)
+                .defaultHeader("X-ASR-Token", asrToken)
                 .build();
     }
 
