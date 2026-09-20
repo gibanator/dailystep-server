@@ -26,6 +26,13 @@ public class SpeechRecognitionService {
     private final SpeechRecognitionClient client;
 
     public TranscriptionResponse transcribe(MultipartFile file) {
+        log.info(
+            "Audio upload: name={}, size={}, contentType={}",
+            file.getOriginalFilename(),
+            file.getSize(),
+            file.getContentType()
+        );
+        
         try {
             AsrResponse response = client.transcribe(file);
 
