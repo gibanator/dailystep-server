@@ -6,6 +6,8 @@ import com.gibanator.dailystepbackendjava.asr.exception.AsrException;
 import com.gibanator.dailystepbackendjava.asr.exception.AsrUnavailableException;
 import com.gibanator.dailystepbackendjava.asr.exception.InvalidAudioException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -16,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
+@Slf4j 
 @Service
 @RequiredArgsConstructor
 public class SpeechRecognitionService {
@@ -25,6 +28,8 @@ public class SpeechRecognitionService {
     public TranscriptionResponse transcribe(MultipartFile file) {
         try {
             AsrResponse response = client.transcribe(file);
+
+            log.info("ASR response: {}", response);
 
             if (response == null || response.text() == null || response.text().isBlank()) {
                 throw new AsrUnavailableException("Empty ASR response");
